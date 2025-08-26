@@ -955,7 +955,7 @@ public class ProjectSchedulerController {
             if (pftsMailTrackingId > 0 && PftsDailySendEmployees != null && !PftsDailySendEmployees.isEmpty()) {
                 pftsMailTrackingInsightsId = service.insertPftsDailyInsights(pftsMailTrackingId);
                 if(pftsMailTrackingInsightsId > 0) {
-                    if (PftsDailySendEmployees != null && !PftsDailySendEmployees.isEmpty()) {
+                    if (!PftsDailySendEmployees.isEmpty()) {
                         int batchSize = 10;
                         List<Object[]> employees = new ArrayList<>(PftsDailySendEmployees);
                         for (int i = 0; i < employees.size(); i += batchSize) {
@@ -1038,7 +1038,7 @@ public class ProjectSchedulerController {
     /*----------------------------------------------------------- QMS MAILS SEND CODE START ------------------------------------------------------------*/
 
 
-    @Scheduled(cron ="${QmsMailTime}")
+    //@Scheduled(cron ="${QmsMailTime}")
     public void sendScheduleMailOfIrf() throws Exception {
          service.sendScheduleMailOfIrf(LabCode);
      }
