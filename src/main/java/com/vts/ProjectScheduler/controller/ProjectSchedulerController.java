@@ -195,7 +195,7 @@ public class ProjectSchedulerController {
             }
             final long effectivelyFinalMailTrackingId = mailTrackingId;
             List<Object[]> pendingReplyEmpsDetailstoSendMail = service.getDailyPendingReplyEmpData();
-            if (mailTrackingId > 0 && pendingReplyEmpsDetailstoSendMail != null && pendingReplyEmpsDetailstoSendMail.size() > 0) {
+            if (mailTrackingId > 0 && pendingReplyEmpsDetailstoSendMail != null && !pendingReplyEmpsDetailstoSendMail.isEmpty()) {
                 mailTrackingInsightsId = service.insertDailyPendingInsights(mailTrackingId);
                 if(mailTrackingInsightsId > 0) {
                     Map<Object, EmailDto> empToDataMap = new HashMap<>();
