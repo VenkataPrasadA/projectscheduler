@@ -14,10 +14,10 @@ import jakarta.transaction.Transactional;
 public interface ProjectHoaChangesRepository extends JpaRepository<ProjectHoaChanges, Long>{
 
 	@Modifying
-	@Query(value="DELETE FROM project_hoa_changes where projectid=:projectId",nativeQuery = true)
+	@Query(value="DELETE FROM project_hoa_changes where projectid=:projectId", nativeQuery = true)
 	public int projectHoaChangesDelete(@Param("projectId") String projectId);
 
 	
-	@Query(value="SELECT ClusterId FROM lab_master WHERE LabCode=:labCode",nativeQuery = true)
+	@Query(value="SELECT cluster_id FROM lab_master WHERE lab_code=:labCode", nativeQuery = true)
 	public Object getClusterId(@Param("labCode") String labCode);
 }

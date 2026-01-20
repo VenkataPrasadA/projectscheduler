@@ -19,9 +19,9 @@ public interface PftsMailTrackRepository extends JpaRepository<PftsMailTrack, Lo
 	@Query(value = "SELECT COUNT(*) FROM pfts_mail_track WHERE CreatedDate = CURDATE() AND TrackingType=:trackingType", nativeQuery = true)
 	public long getPftsMailInitiatedCount(@Param("trackingType") String trackingType) throws Exception;
 
-	@Query(value = "SELECT DISTINCT a.ForwardedTo,e.MobileNo,e.Email,e.DronaEmail FROM pfts_filetracking a,employee e WHERE a.ForwardedTo=e.EmpNo AND a.StatusId='1'", nativeQuery = true)
+	@Query(value = "SELECT DISTINCT a.ForwardedTo,e.mobile_no,e.email,e.drona_email FROM pfts_filetracking a,ibas_employee_view e WHERE a.ForwardedTo=e.emp_no AND a.StatusId='1'", nativeQuery = true)
 	public List<Object[]> pftsDailySendEmployees() throws Exception;
 
-	@Query(value = "SELECT a.DemandNo,a.ForwardedTo,b.EventName,a.EventDate,e.MobileNo,e.EMail,e.DronaEMail,d.FileStageId,f.ItemFor,ft.EmpName,fd.Designation FROM pfts_filetracking a ,pfts_fileevents b,employee e,pfts_filestage d,pfts_demand f,employee ft,employee_desig fd WHERE a.EventId=b.FileEventId AND a.ForwardedTo=e.EmpNo AND a.ForwardedTo=:forwardedTo AND b.FileStageId=d.FileStageId AND a.DemandNo=f.DemandNo AND a.ForwardedBy=ft.EmpNo AND ft.DesigId=fd.DesigId AND a.StatusId='1'", nativeQuery = true)
+	@Query(value = "SELECT a.DemandNo,a.ForwardedTo,b.EventName,a.EventDate,e.mobile_no,e.email,e.drona_email,d.FileStageId,f.ItemFor,ft.emp_name,fd.designation FROM pfts_filetracking a ,pfts_fileevents b,ibas_employee_view e,pfts_filestage d,pfts_demand f,ibas_employee_view ft,ibas_employee_desig_view fd WHERE a.EventId=b.FileEventId AND a.ForwardedTo=e.emp_no AND a.ForwardedTo=:forwardedTo AND b.FileStageId=d.FileStageId AND a.DemandNo=f.DemandNo AND a.ForwardedBy=ft.emp_no AND ft.desig_id=fd.desig_id AND a.StatusId='1'", nativeQuery = true)
 	public List<Object[]> pftsDailySendEmployeesDetails(@Param("forwardedTo") String forwardedTo) throws Exception;
 }

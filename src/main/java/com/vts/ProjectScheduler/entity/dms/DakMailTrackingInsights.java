@@ -1,4 +1,4 @@
-package com.vts.ProjectScheduler.entity.pms;
+package com.vts.ProjectScheduler.entity.dms;
 
 import java.time.LocalDateTime;
 

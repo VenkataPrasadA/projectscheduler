@@ -20,7 +20,7 @@ public interface PmsMailTrackRepository extends JpaRepository<PfmsMailTracking, 
 	public long pfmsMailSendEmployeesCount(@Param("numberOfDays") int numberOfDays);
 
 	
-	@Query(value="SELECT a.actionno,(SELECT CONCAT(IFNULL(CONCAT(e.title,' '),IFNULL(CONCAT(e.salutation,' '),'')), e.empname) FROM employee e WHERE e.empid=a.assignor)AS 'Assignor',(SELECT email FROM employee e WHERE e.empid=a.assignee)AS 'AssigneeEmail',a.assignee,a.progress,a.enddate,(SELECT Dronaemail FROM employee e WHERE e.empid=a.assignee)AS 'AssigneeDronaEmail' FROM action_assign a WHERE a.EndDate BETWEEN CURDATE() AND CURDATE()+(:numberOfDays) AND a.assigneeLabCode <> '@EXP' ORDER BY a.assignee",nativeQuery = true)
+	@Query(value="SELECT a.ActionNo, (SELECT CONCAT(IFNULL(CONCAT(e.title,' '),IFNULL(CONCAT(e.salutation,' '),'')), e.emp_name) FROM employee e WHERE e.emp_id=a.assignor)AS 'Assignor', (SELECT email FROM employee e WHERE e.emp_id=a.assignee) AS 'AssigneeEmail', a.assignee, a.progress, a.enddate, (SELECT drona_email FROM employee e WHERE e.emp_id=a.assignee)AS 'AssigneeDronaEmail' FROM action_assign a WHERE a.EndDate BETWEEN CURDATE() AND CURDATE()+(:numberOfDays) AND a.assigneeLabCode <> '@EXP' ORDER BY a.assignee",nativeQuery = true)
 	public List<Object[]> weeklyActionList(@Param("numberOfDays") int numberOfDays);
 
 
@@ -33,7 +33,7 @@ public interface PmsMailTrackRepository extends JpaRepository<PfmsMailTracking, 
 	public long pfmsMailSendEmployeesCountForMeetingMail(@Param("date") String date,@Param("labCode") String labCode);
 
 
-	@Query(value="SELECT cs.scheduleid,cs.projectid,cs.InitiationId,c.CommitteeShortName,c.CommitteeName,cs.MeetingVenue,cs.ScheduleStartTime,pm.projectcode,pm.projectshortname FROM committee_schedule cs,committee c ,project_master pm WHERE  c.CommitteeId=cs.CommitteeId AND pm.projectid=cs.projectid AND  cs.ScheduleDate=:date AND cs.isactive='1'",nativeQuery = true)
+	@Query(value="SELECT cs.scheduleid,cs.projectid,cs.InitiationId,c.CommitteeShortName,c.CommitteeName,cs.MeetingVenue,cs.ScheduleStartTime,pm.project_code,pm.project_short_name FROM committee_schedule cs,committee c ,project_master pm WHERE c.CommitteeId=cs.CommitteeId AND pm.project_id=cs.projectid AND cs.ScheduleDate=:date AND cs.isactive='1'",nativeQuery = true)
 	public List<Object[]> getTodaysMeetings(@Param("date") String date);
 
 

@@ -21,7 +21,7 @@ public interface ProjectHoaRepository extends JpaRepository<ProjectHoa, Long>{
 	public int projectHoaDelete(@Param("labCode") String labCode);
 
 	
-	@Query(value="SELECT a.projectid AS id,a.projectcode,a.projectname,a.projectmainid,a.projecttype AS 'project_director',a.projectdirector,a.sanctiondate,a.pdc FROM project_master a  WHERE  a.isactive=1 AND a.labcode =:labCode",nativeQuery = true)
+	@Query(value="SELECT a.project_id AS id,a.project_code,a.project_name,a.project_main_id,a.project_type AS 'project_director',a.project_director,a.sanction_date,a.pdc FROM project_master a WHERE a.is_active=1 AND a.lab_code =:labCode",nativeQuery = true)
 	public List<Object[]> projectList(@Param("labCode") String labCode);
 
 
