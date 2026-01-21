@@ -2,12 +2,16 @@ package com.vts.ProjectScheduler.service;
 
 import com.vts.ProjectScheduler.controller.ProjectSchedulerController;
 import com.vts.ProjectScheduler.dto.MailConfigurationDto;
+import com.vts.ProjectScheduler.entity.dms.DakMailTracking;
+import com.vts.ProjectScheduler.entity.dms.DakMailTrackingInsights;
 import com.vts.ProjectScheduler.entity.ibas.*;
 import com.vts.ProjectScheduler.entity.pms.*;
 import com.vts.ProjectScheduler.entity.qms.IrfMailTrack;
 import com.vts.ProjectScheduler.entity.qms.IrfMailTrackInsights;
 import com.vts.ProjectScheduler.entity.sis.SisMailTrack;
 import com.vts.ProjectScheduler.entity.sis.SisMailTrackInsights;
+import com.vts.ProjectScheduler.repository.dms.DakMailTrackInsightsRepository;
+import com.vts.ProjectScheduler.repository.dms.DakMailTrackRepository;
 import com.vts.ProjectScheduler.repository.ibas.*;
 import com.vts.ProjectScheduler.repository.pms.*;
 import com.vts.ProjectScheduler.repository.qms.IrfMailTrackInsightsRepository;
@@ -128,8 +132,8 @@ public class ProjectSchedulerServiceImpl implements ProjectSchedulerService{
     @Autowired
     private SisMailTrackInsightsRepository sisMailTrackInsightsRepository;
 
-
-
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     @Override
     public MailConfigurationDto getMailConfigByTypeOfHost(String type) throws Exception {
@@ -193,6 +197,7 @@ public class ProjectSchedulerServiceImpl implements ProjectSchedulerService{
         long TrackingInsightsResult = 0;
 
         List<Object[]> pendingReplyEmpsDetailstoSendMail = dakMailTrackRepository.getDailyPendingReplyEmpData();
+        
         if (pendingReplyEmpsDetailstoSendMail != null && pendingReplyEmpsDetailstoSendMail.size() > 0) {
             Map<Integer, Set<String>> empDakNosMap = new HashMap();
 
@@ -200,7 +205,7 @@ public class ProjectSchedulerServiceImpl implements ProjectSchedulerService{
 
             for (Object[] rowData : pendingReplyEmpsDetailstoSendMail) {
                 int empId = Integer.parseInt(rowData[1].toString());
-                String dakNo = rowData[4].toString();
+                String dakNo = rowData[2].toString();
 
                 if (!empDakNosMap.containsKey(empId)) {
                     empDakNosMap.put(empId, new HashSet<>());
@@ -291,7 +296,7 @@ public class ProjectSchedulerServiceImpl implements ProjectSchedulerService{
 
             for (Object[] rowData : summaryDistributedToSendMail) {
                 int empId = Integer.parseInt(rowData[1].toString());
-                String dakNo = rowData[4].toString();
+                String dakNo = rowData[2].toString();
                 if (!empDakNosMap.containsKey(empId)) {
                     empDakNosMap.put(empId, new HashSet<>());
                 }
@@ -329,7 +334,7 @@ public class ProjectSchedulerServiceImpl implements ProjectSchedulerService{
             List<DakMailTrackingInsights> insightsList = new ArrayList<>();
             for (Object[] rowData : pendingReplyEmpsDetailsToSendMail) {
                 int empId = Integer.parseInt(rowData[1].toString());
-                String dakNo = rowData[4].toString();
+                String dakNo = rowData[2].toString();
                 if (!empDakNosMap.containsKey(empId)) {
                     empDakNosMap.put(empId, new HashSet<>());
                 }
@@ -954,7 +959,7 @@ public class ProjectSchedulerServiceImpl implements ProjectSchedulerService{
         long expectCount =0;
         long result=0;
         int msgResult=0;
-        List<Object[]> empList = dakMailTrackRepository.getEmpDetails(labCode);
+        List<Object[]> empList = employeeRepository.getEmpDetails(labCode);
         List<Object[]> membersList = irfMailTrackRepository.getMembersList();
         IrfMailTrack irfMailTrack = new IrfMailTrack();
         irfMailTrack.setCreatedDate(LocalDateTime.now());
@@ -1099,9 +1104,9 @@ public class ProjectSchedulerServiceImpl implements ProjectSchedulerService{
     @Override
     public int RINCRVPendingList() throws Exception {
         List<Object[]> rinCrvPendingList = sirRepository.getRinCrvPendingList();
-        List<Object[]> empList = dakMailTrackRepository.getEmpDetails(LabCode);
+        List<Object[]> empList = employeeRepository.getEmpDetails(LabCode);
         List<Object[]> proList = projectHoaRepository.projectList(LabCode);
-        List<Object[]> divList = dakMailTrackRepository.divList(LabCode);
+        List<Object[]> divList = employeeRepository.divList(LabCode);
         List<Object[]> storesOfficerList = sirRepository.storesOfficerList(5);
 
         List<Object[]> storesEmployeeList = empList.stream()

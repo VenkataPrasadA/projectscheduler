@@ -1,12 +1,11 @@
-package com.vts.ProjectScheduler.repository.pms;
+package com.vts.ProjectScheduler.repository.dms;
 
-import com.vts.ProjectScheduler.entity.pms.DakMailTrackingInsights;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.vts.ProjectScheduler.entity.pms.DakMailTrackingInsights;
+import com.vts.ProjectScheduler.entity.dms.DakMailTrackingInsights;
 
 import jakarta.transaction.Transactional;
 @Transactional

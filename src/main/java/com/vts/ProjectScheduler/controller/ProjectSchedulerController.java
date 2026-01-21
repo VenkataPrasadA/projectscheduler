@@ -10,6 +10,7 @@ import com.vts.ProjectScheduler.dto.MailConfigurationDto;
 import com.vts.ProjectScheduler.dto.MeetingMailDto;
 import com.vts.ProjectScheduler.dto.PftsEmailDto;
 import com.vts.ProjectScheduler.entity.pms.*;
+import com.vts.ProjectScheduler.repository.pms.EmployeeRepository;
 import com.vts.ProjectScheduler.service.ProjectSchedulerService;
 import jakarta.annotation.PostConstruct;
 import jakarta.mail.Authenticator;
@@ -61,6 +62,9 @@ public class ProjectSchedulerController {
     @Autowired
     PFMSServeFeignClient PFMSServ;
 
+    @Autowired
+    private EmployeeRepository employeeRepository;
+    
     private String username;
 
     private String host;
@@ -195,26 +199,24 @@ public class ProjectSchedulerController {
             }
             final long effectivelyFinalMailTrackingId = mailTrackingId;
             List<Object[]> pendingReplyEmpsDetailstoSendMail = service.getDailyPendingReplyEmpData();
+            List<Employee> employeeList = employeeRepository.findAll();
+            
             if (mailTrackingId > 0 && pendingReplyEmpsDetailstoSendMail != null && !pendingReplyEmpsDetailstoSendMail.isEmpty()) {
                 mailTrackingInsightsId = service.insertDailyPendingInsights(mailTrackingId);
                 if(mailTrackingInsightsId > 0) {
                     Map<Object, EmailDto> empToDataMap = new HashMap<>();
                     for (Object[] obj : pendingReplyEmpsDetailstoSendMail) {
+                    	Employee emp = employeeList.stream().filter(e -> e.getEmpId()== Long.parseLong(obj[1].toString())).findFirst().orElse(null);
                         Object empId = obj[1];
-                        Object dakNo = obj[4];
-                        Object source = obj[5];
-                        Object dueDate = obj[6];
-                        String email = null;
-                        String dronalEmail=null;
-                        if(obj[3] != null && !obj[3].toString().trim().isEmpty()) {
-                            email = obj[3].toString();
-                        }
-                        if(obj[8] != null && !obj[8].toString().trim().isEmpty()) {
-                            dronalEmail = obj[8].toString();
-                        }
+                        Object dakNo = obj[2];
+                        Object source = obj[3];
+                        Object dueDate = obj[4];
+                        String email = emp!=null && emp.getEmail()!=null ? emp.getEmail().trim() : null;
+                        String dronaEmail= emp!=null && emp.getDronaEmail()!=null ? emp.getDronaEmail().trim() : null;
+
                         if (empId != null && email != null && !email.isEmpty()) {
                             if (!empToDataMap.containsKey(empId)) {
-                                empToDataMap.put(empId, new EmailDto(email,dronalEmail));
+                                empToDataMap.put(empId, new EmailDto(email,dronaEmail));
                             }
                             if (dakNo != null && !dakNo.toString().isEmpty()) {
                                 empToDataMap.get(empId).addDakAndSourceAndDueDate(dakNo.toString(), source.toString(), dueDate.toString());
@@ -308,29 +310,27 @@ public class ProjectSchedulerController {
             }
             final long effectivelyFinalMailTrackingId = mailTrackingId;
             List<Object[]> dailyDistributedSummaryToSendMail = service.getSummaryDistributedEmpData();
+            List<Employee> employeeList = employeeRepository.findAll();
+            
             if (mailTrackingId > 0 && dailyDistributedSummaryToSendMail != null && !dailyDistributedSummaryToSendMail.isEmpty()) {
                 mailTrackingInsightsId = service.insertSummaryDistributedInsights(mailTrackingId);
                 if(mailTrackingInsightsId > 0) {
                     Map<Object, EmailDto> empToDataMap = new HashMap<>();
                     for (Object[] obj : dailyDistributedSummaryToSendMail) {
+                    	Employee emp = employeeList.stream().filter(e -> e.getEmpId()== Long.parseLong(obj[1].toString())).findFirst().orElse(null);
                         Object empId = obj[1];
-                        Object dakNo = obj[4];
-                        Object source = obj[5];
+                        Object dakNo = obj[2];
+                        Object source = obj[3];
                         String dueDate = null;
-                        if(obj[6] != null && !obj[6].toString().trim().isEmpty()) {
+                        if(obj[4] != null && !obj[4].toString().trim().isEmpty()) {
                             SimpleDateFormat rdf=new SimpleDateFormat("dd-MM-yyyy");
-                            dueDate = rdf.format(obj[6]);
+                            dueDate = rdf.format(obj[4]);
                         }else {
                             dueDate ="NA";
                         }
-                        String email = null;
-                        String dronaEmail=null;
-                        if(obj[3] != null && !obj[3].toString().trim().isEmpty()) {
-                            email = obj[3].toString();
-                        }
-                        if(obj[7] != null && !obj[7].toString().trim().isEmpty()) {
-                            dronaEmail = obj[7].toString();
-                        }
+                        String email = emp!=null && emp.getEmail()!=null ? emp.getEmail().trim() : null;
+                        String dronaEmail= emp!=null && emp.getDronaEmail()!=null ? emp.getDronaEmail().trim() : null;
+                        
                         if (empId != null && email != null && !email.isEmpty()) {
                             if (!empToDataMap.containsKey(empId)) {
                                 empToDataMap.put(empId, new EmailDto(email,dronaEmail));
@@ -434,29 +434,27 @@ public class ProjectSchedulerController {
             }
             final long effectivelyFinalMailTrackingId = mailTrackingId;
             List<Object[]> pendingReplyEmpsDetailsToSendMail = service.getWeeklyPendingReplyEmpData();
+            List<Employee> employeeList = employeeRepository.findAll();
+
             if (mailTrackingId > 0 && pendingReplyEmpsDetailsToSendMail != null && !pendingReplyEmpsDetailsToSendMail.isEmpty()) {
                 mailTrackingInsightsId = service.insertWeeklyPendingInsights(mailTrackingId);
                 if (mailTrackingInsightsId>0) {
                     Map<Object, EmailDto> empToDataMap = new HashMap<>();
                     for (Object[] obj : pendingReplyEmpsDetailsToSendMail) {
+                    	Employee emp = employeeList.stream().filter(e -> e.getEmpId()== Long.parseLong(obj[1].toString())).findFirst().orElse(null);
                         Object empId = obj[1];
-                        Object dakNo = obj[4];
-                        Object source = obj[5];
+                        Object dakNo = obj[2];
+                        Object source = obj[3];
                         String dueDate = null;
-                        if(obj[6] != null && !obj[6].toString().trim().isEmpty()) {
+                        if(obj[4] != null && !obj[4].toString().trim().isEmpty()) {
                             SimpleDateFormat rdf=new SimpleDateFormat("dd-MM-yyyy");
-                            dueDate = rdf.format(obj[6]);
+                            dueDate = rdf.format(obj[4]);
                         }else {
                             dueDate ="--";
                         }
-                        String email = null;
-                        String dronaEmail=null;
-                        if(obj[3] != null && !obj[3].toString().trim().isEmpty()) {
-                            email = obj[3].toString();
-                        }
-                        if(obj[7] != null && !obj[7].toString().trim().isEmpty()) {
-                            dronaEmail = obj[7].toString();
-                        }
+                        String email = emp!=null && emp.getEmail()!=null ? emp.getEmail().trim() : null;
+                        String dronaEmail= emp!=null && emp.getDronaEmail()!=null ? emp.getDronaEmail().trim() : null;
+                        
                         if (empId != null && email != null && !email.isEmpty()) {
                             if (!empToDataMap.containsKey(empId)) {
                                 empToDataMap.put(empId, new EmailDto(email,dronaEmail));
